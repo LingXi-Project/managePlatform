@@ -126,7 +126,7 @@ const Welcome: React.FC = () => {
               width: '65%',
             }}
           >
-            11144444
+            可在左侧点击 Tab 进入相关页面，也可以点击下方卡片了解详情
            </p>
           <div
             style={{
@@ -137,21 +137,21 @@ const Welcome: React.FC = () => {
           >
             <InfoCard
               index={1}
-              href="https://umijs.org/docs/introduce/introduce"
-              title="了解 umi"
-              desc="umi 是一个可扩展的企业级前端应用框架,umi 以路由为基础的，同时支持配置式路由和约定式路由，保证路由的功能完备，并以此进行功能扩展。"
+              href=""
+              title="了解 树洞救援团"
+              desc="树洞救援团（有待补充）"
             />
             <InfoCard
               index={2}
-              title="了解 ant design"
-              href="https://ant.design"
-              desc="antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。"
+              title="了解 管理平台"
+              href=""
+              desc="树洞救援管理系统主要服务于”树洞救援AI管理“小程序，主要功能有：人员权限管理、视频权限管理、岗前培训管理等功能。"
             />
             <InfoCard
               index={3}
-              title="了解 Pro Components"
-              href="https://procomponents.ant.design"
-              desc="ProComponents 是一个基于 Ant Design 做了更高抽象的模板组件，以 一个组件就是一个页面为开发理念，为中后台开发带来更好的体验。"
+              title="常见问题反馈"
+              href=""
+              desc="若有问题，请在微信群中反馈，我们将及时处理"
             />
           </div>
         </div>
