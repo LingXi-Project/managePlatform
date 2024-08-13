@@ -1,7 +1,8 @@
-import { PageContainer } from '@ant-design/pro-components';
+import { currentUser, getManager } from '@/services/ant-design-pro/api';
+import { PageContainer, useEditableMap } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Card, theme } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
@@ -17,6 +18,19 @@ const InfoCard: React.FC<{
   const { useToken } = theme;
 
   const { token } = useToken();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await currentUser();
+      const ress = await getManager();
+      console.log('res', res);
+      console.log('ress',ress);
+      
+    };
+  
+    fetchData();
+  }, []);
+  
 
   return (
     <div
@@ -116,7 +130,7 @@ const Welcome: React.FC = () => {
           >
             欢迎使用 树洞救援管理平台
           </div>
-          <p
+          {/* <p
             style={{
               fontSize: '14px',
               color: token.colorTextSecondary,
@@ -127,8 +141,8 @@ const Welcome: React.FC = () => {
             }}
           >
             11144444
-           </p>
-          <div
+           </p> */}
+          {/* <div
             style={{
               display: 'flex',
               flexWrap: 'wrap',
@@ -153,7 +167,7 @@ const Welcome: React.FC = () => {
               href="https://procomponents.ant.design"
               desc="ProComponents 是一个基于 Ant Design 做了更高抽象的模板组件，以 一个组件就是一个页面为开发理念，为中后台开发带来更好的体验。"
             />
-          </div>
+          </div> */}
         </div>
       </Card>
     </PageContainer>

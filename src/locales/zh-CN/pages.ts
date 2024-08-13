@@ -72,4 +72,13 @@ export default {
   'pages.searchTable.tenThousand': '万',
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
+  'pages.authorzationTable.ruleName.nameLabel': '用户名称',
+  'pages.authorzationTable.userInfo': '用户信息',
+  'pages.authorzationTable.role': '当前身份',
+  'pages.authorzationTable.changeRole': '最高权限管理',
+  'pages.videoTable.ruleName.nameLabel': '文件夹名称',
+  'pages.videoTable.videoList': '视频列表',
+  'pages.videoTable.visible': '可见身份',
+  'pages.videoTable.addvideo': '添加视频',
+  'pages.authorzationTable.area': '管理区域'
 };

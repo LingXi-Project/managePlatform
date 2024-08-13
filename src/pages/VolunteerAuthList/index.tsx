@@ -1,4 +1,4 @@
-import { addRule, removeRule, userinfo, updateRole } from '@/services/ant-design-pro/api';
+import { addRule, removeRule, userinfo, updateRole, updateManage } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -7,11 +7,10 @@ import {
   ProDescriptions,
   ProForm,
   ProFormText,
-  ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, message, Space, Divider, Typography, Input } from 'antd';
+import { Button, Drawer, Form, message, Space, Divider, Select, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text } = Typography;
 
@@ -23,7 +22,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const intl = useIntl();
   const [form] = Form.useForm<API.User | { sex: string }>();
-  const [area, setArea] = useState<string[]>([]);
 
   const handleAdd = async (fields: API.RuleListItem) => {
     const hide = message.loading('正在添加');
@@ -56,13 +54,6 @@ const TableList: React.FC = () => {
     }
   };
 
-  // 字符串分割并只保留中文字符
-  const handleAreaInput = (input: string) => {
-    // 将字符串按非中文字符进行分割，并过滤掉空项
-    const chineseAreas = input.split(/[^一-龥]+/).filter(item => item.trim() !== '');
-    setArea(chineseAreas);
-  };
-
   const columns: ProColumns<API.UserListItem>[] = [
     {
       title: <FormattedMessage id="pages.authorzationTable.ruleName.nameLabel" defaultMessage="user name" />,
@@ -84,6 +75,8 @@ const TableList: React.FC = () => {
       dataIndex: 'user_id',
       tip: '用户信息',
       render: (_, info) => {
+        console.log('dom info',info);
+        
         return (
           <>
             <ModalForm<API.User>
@@ -97,7 +90,7 @@ const TableList: React.FC = () => {
               }}
               onOpenChange={(open) => {
                 if (open) {
-                  form.setFieldsValue({ ...info, sex: !!info.sex ? '女' : '男' });
+                  form.setFieldsValue({...info, sex: !!info.sex ? '女' : '男'});
                 }
               }}
               submitTimeout={2000}
@@ -105,7 +98,7 @@ const TableList: React.FC = () => {
                 return true;
               }}
             >
-              <Divider />
+            <Divider />
               <Space direction="vertical" size="middle">
                 <Text strong>个人信息</Text>
                 <ProForm.Group>
@@ -123,31 +116,97 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.authorzationTable.area" defaultMessage="area" />,
+      title: <FormattedMessage id="pages.authorzationTable.role" defaultMessage="Role" />,
+      dataIndex: 'role',
+      hideInForm: true,
+      valueEnum: {
+        '-1': { text: '待处理人员', status: 'default' },
+        '0': { text: '非在册队员', status: 'default' },
+        '1': { text: '申请队员', status: 'Processing' },
+        '2': { text: '岗前培训', status: 'Processing' },
+        '3': { text: '见习队员', status: 'Processing' },
+        '4': { text: '正式队员', status: 'Success' },
+        '5': { text: '督导老师', status: 'Success' },
+        '6': { text: '树洞之友', status: 'Success' },
+        '40': { text: '普通队员', status: 'Success' },
+        '41': { text: '核心队员', status: 'Success' },
+        '42': { text: '区域负责人', status: 'Processing' },
+        '43': { text: '组委会成员', status: 'Processing' },
+        '44': { text: '组委会主任', status: 'Processing' },
+      },
+    },
+    {
+      title: <FormattedMessage id="pages.authorzationTable.changeRole" defaultMessage="Change Role" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => {
+        const roleOptions = [
+          { label: '待处理人员', value: '-1' },
+          { label: '非在册队员', value: '0' },
+          { label: '申请队员', value: '1' },
+          { label: '岗前培训', value: '2' },
+          { label: '见习队员', value: '3' },
+          { label: '正式队员', value: '4' },
+          { label: '督导老师', value: '5' },
+          { label: '树洞之友', value: '6' },
+          { label: '普通队员', value: '40' },
+          { label: '核心队员', value: '41' },
+          { label: '区域负责人', value: '42' },
+          { label: '组委会成员', value: '43' },
+          { label: '组委会主任', value: '44' },
+        ];
+
+        const managerRole = localStorage.getItem('manageInfo');
+        console.log('manage',managerRole);
+        
+
+        if (managerRole) {
+            const parsedRole = JSON.parse(managerRole);
+            console.log('', parsedRole);
+        
+            if (parsedRole[0].status) {
+              roleOptions.push({ label: '视频管理员', value: '45' });
+            }
+        }
+
+        const defaultRole = roleOptions.find(option => option.value === String(record.highest_role))?.value || '-1';
+
         return [
-          <Input
-            key="area"
-            onChange={(e) => handleAreaInput(e.target.value)}
-            placeholder="请输入地区，用逗号分隔"
+          <Select
+            key="select-role"
+            defaultValue={defaultRole}
+            style={{ width: 160 }}
+            onChange={(value) => {
+              record.highest_role = Number(value);
+              setCurrentRow({ ...record });
+            }}
+            options={roleOptions}
           />,
           <Button
             key="submit-role-change"
             type="link"
             onClick={async () => {
-              const success = await updateRole({
-                user_id: record.id,
-                new_role: record.highest_role,
-                new_region: area,
-              });
-              if (success) {
-                message.success('角色变更成功');
-                actionRef.current?.reload();
-              } else {
-                message.error('角色变更失败，请重试');
+              console.log('record',record);
+              if(record.highest_role < 45){
+                const success = await updateRole({
+                  user_id: record.id,
+                  new_role: record.highest_role,
+                  new_rigion: []
+                });
+                if (success) {
+                  console.log('success');
+                  message.success('角色变更成功');
+                  actionRef.current?.reload();
+                } else {
+                  console.log('error');
+                  message.error('角色变更失败，请重试');
+                }
+              }else{
+                const success = await updateManage({
+                  user_id: record.id,
+                });
               }
+
             }}
           >
             提交变更
@@ -169,28 +228,18 @@ const TableList: React.FC = () => {
         request={async (params) => {
           const { current, pageSize, ...filters } = params;
           const res = await userinfo({ current, pageSize }).then((res) => res.data.list);
-          console.log('res',res);
-          
-          // 过滤 role 为 42 以上的用户
-          const filteredList = res.filter((item) => item.highest_role >= 42);
-
-          
-          // 进一步过滤其它参数
-          const finalList = filteredList.filter((item) => {
+          const filteredList = res.filter((item) => {
             return Object.keys(filters).every((name) => {
               //@ts-ignore
               return String(item[name]) === String(filters[name]);
             });
           });
-        
           return {
-            data: finalList,
+            data: filteredList,
             success: true,
-            total: finalList.length,
+            total: res.length,
           };
         }}
-        
-        
         columns={columns}
         // rowSelection={{
         //   onChange: (_, selectedRows) => {
@@ -246,38 +295,24 @@ const TableList: React.FC = () => {
               message: <FormattedMessage id="pages.searchTable.ruleName" defaultMessage="Rule name is required" />,
             },
           ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea
-          name="desc"
-          width="md"
-          rules={[
-            {
-              required: true,
-              message: <FormattedMessage id="pages.searchTable.ruleDesc" defaultMessage="Rule description is required" />,
-            },
-          ]}
+          placeholder="请输入角色名"
         />
       </ModalForm>
       <Drawer
         width={600}
-        open={!!showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
+        open={showDetail}
+        onClose={() => setShowDetail(false)}
         closable={false}
       >
-        {currentRow?.name && (
+        {currentRow?.id && (
           <ProDescriptions<API.UserListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.username}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<API.UserListItem>[]}
           />

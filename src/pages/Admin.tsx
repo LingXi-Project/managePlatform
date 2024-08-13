@@ -3,8 +3,10 @@ import { PageContainer } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { Alert, Card, Typography } from 'antd';
 import React from 'react';
+import logo from '../images/logo.jpg'
 
 const Admin: React.FC = () => {
+  
   const intl = useIntl();
   return (
     <PageContainer
@@ -28,7 +30,7 @@ const Admin: React.FC = () => {
           }}
         />
         <Typography.Title level={2} style={{ textAlign: 'center' }}>
-          <SmileTwoTone /> 树洞救援管理平台 <HeartTwoTone twoToneColor="#eb2f96" /> You
+          <MyComponent /> 树洞救援管理平台 <HeartTwoTone twoToneColor="#eb2f96" /> You
         </Typography.Title>
       </Card>
       <p style={{ textAlign: 'center', marginTop: 24 }}>

@@ -1,5 +1,5 @@
 import { Footer } from '@/components';
-import { login } from '@/services/ant-design-pro/api';
+import { login, getManager } from '@/services/ant-design-pro/api';
 import {
   MobileOutlined,
   KeyOutlined
@@ -14,6 +14,7 @@ import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { createStyles } from 'antd-style';
+import logo from '../../../images/logo.jpg'
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -89,15 +90,26 @@ const Login: React.FC = () => {
     if (userInfo) {
       console.log('info', userInfo);
       
+      // 调用 getManage API 获取管理员权限信息
+      const manageInfo = await getManager();
+      console.log('manage',manageInfo.managerRoles);
+      
+      // const isAdmin = manageInfo?.isAdmin; // 假设 getManage 返回的数据结构中包含 isAdmin 字段
+
+      // 将管理信息和角色信息保存到本地存储
+      localStorage.setItem('manageInfo', JSON.stringify(manageInfo.managerRoles));
+      localStorage.setItem('role', userInfo.highest_role);
+
       flushSync(() => {
         setInitialState((s) => ({
           ...s,
-          currentUser: userInfo,
+          currentUser: {
+            ...userInfo,
+          },
         }));
       });
     }
   };
-
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
@@ -152,7 +164,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
+          logo={<img alt="logo" src={logo}/>}
           title="树洞救援管理系统"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{

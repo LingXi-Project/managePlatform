@@ -26,7 +26,7 @@ export default {
   'menu.list.video-list': '视频权限管理',
   'menu.list.application-list': '申请审批',
   'menu.list.grade-list': '岗前培训',
-  'menu.list.authorization-list': '权限任免',
+  'menu.list.authorization-list': '区域权限任免',
   'menu.list.volunteer-auth-list': '志愿者身份管理',
   'menu.list.basic-list': '标准列表',
   'menu.list.card-list': '卡片列表',

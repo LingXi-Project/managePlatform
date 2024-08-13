@@ -3,6 +3,21 @@
 
 declare namespace API {
 
+  type Qiniu = {
+    token: string
+    [property: string]: any;
+  }
+
+  type checkManagerRole = {
+    managerRoles: manageItem[];
+    [property: string]: any;
+  }
+
+  type manageItem = {
+    label: string,
+    status: boolean
+  }
+
   type LoginResult =
     | {
         access_expire: number;
@@ -15,6 +30,7 @@ declare namespace API {
   type PageParams = {
     current?: number;
     pageSize?: number;
+    highest_role?: number
   };
   type resType = {
     data: any,
@@ -125,7 +141,7 @@ interface Identitification {
 }
 
 /**
-* 救助历史
+* 相关病史
 */
 interface MedicineHistory {
   medicine: string;
@@ -135,7 +151,7 @@ interface MedicineHistory {
 }
 
 /**
-* 救助信息
+* 人员简历
 */
 interface Resume {
   duty: string;
@@ -179,6 +195,99 @@ interface Resume {
     role: number;
     sex: number;
     username: string;
+    [property: string]: any;
+  }
+
+  type UserListItem = {
+    id: number;
+    username: string;
+    email: string;
+    mobile: string;
+    address: string;
+    sex: number;
+    status: number;
+    createdAt: string;
+    updatedAt: string;
+    role: number;
+    highest_role: number;
+    region: string[];
+    birthday: string;
+    avator: string;
+    [property: string]: any;
+  };
+
+  type UserList = {
+    list: UserListItem[];
+    total: number;
+    [property: string]: any;
+  };
+
+  export interface User {
+    address: string;
+    birthday: string;
+    email: string;
+    id: number;
+    mobile: string;
+    nation: string;
+    native: string;
+    organizing_committee_id: number;
+    outWork: string;
+    policialOutlook: string;
+    regional_head_id: number;
+    resumes: Resume[];
+    sex: number;
+    speciality: string;
+    status: number;
+    submission_time: number;
+    update_time: string;
+    user_id: number;
+    username: string;
+    work: string;
+    [property: string]: any;
+  }
+
+  type FolderList = {
+    folder: FolderListItem[],
+    total: number,
+    [property: string]: any;
+  }
+
+  type FolderListItem = {
+    id: number,
+    folder_name: string,
+    role: number,
+    [property: string]: any;
+  }
+
+  type FolderItem = {
+    folder_id: number,
+    folder_name: string,
+    role: number
+    [property: string]: any;
+  }
+
+  type VideoItem = {
+    folder_id: number,
+    file_name: string,
+    video_id: number
+    [property: string]: any;
+  }
+
+  type VideoList = {
+    list: VideoListItem[],
+    total: number,
+    [property: string]: any;
+  }
+
+  type AddVideo = {
+    video_id: number,
+    url: string,
+    [property: string]: any;
+  }
+
+  type AddFolder = {
+    folder_name:string,
+    role:number;
     [property: string]: any;
   }
 }
